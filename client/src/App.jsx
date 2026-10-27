@@ -4,6 +4,7 @@ import { FieldMedia } from './components/FieldMedia';
 import { Footer } from './components/Footer';
 import { Hero } from './components/Hero';
 import { Impact } from './components/Impact';
+import { Leadership } from './components/Leadership';
 import { Navbar } from './components/Navbar';
 import { Services } from './components/Services';
 
@@ -17,6 +18,7 @@ export default function App() {
         <Services />
         <FieldMedia />
         <Impact />
+        <Leadership />
         <Contact />
       </main>
       <Footer />
