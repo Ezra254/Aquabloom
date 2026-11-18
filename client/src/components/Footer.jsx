@@ -18,7 +18,6 @@ export function Footer() {
           © {year} {companyContent.footer.legal}
         </p>
       </div>
-      <p className="site-footer__credit">{companyContent.footer.mediaCredit}</p>
     </footer>
   );
 }

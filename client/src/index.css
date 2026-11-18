@@ -743,13 +743,6 @@ textarea {
   margin: 0;
 }
 
-.site-footer__credit {
-  width: min(var(--max-width), calc(100% - 2rem));
-  margin: 0.85rem auto 0;
-  font-size: 0.82rem;
-  color: rgba(207, 228, 225, 0.75);
-}
-
 @media (max-width: 900px) {
   .nav-toggle {
     display: block;

@@ -263,6 +263,5 @@ export const companyContent = {
   footer: {
     legal: 'Aquabloom Ventures Limited',
     note: 'Youth-led aquaculture · Western Kenya and the Lake Victoria region',
-    mediaCredit: 'Photos and video from Aquabloom cage operations.',
   },
 };
