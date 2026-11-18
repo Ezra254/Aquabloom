@@ -8,7 +8,7 @@ export function Leadership() {
 
   const team = [
     {
-      name: 'Cliff Phillip',
+      name: 'Cliff Shitote',
       title: 'Head of Hatchery Operations & Sales',
       bio: 'Leads fingerling production and manages key relationships with farmers, NGOs, and county governments.',
       photo: '/media/team/cliff.jpg',    // ← place photo at public/media/team/cliff.jpg
@@ -21,8 +21,8 @@ export function Leadership() {
     },
     {
       name: 'Gift Ezra',
-      title: '',
-      bio: '',
+      title: 'IT & Digital Operations Lead',
+      bio: "Responsible for the development, management and maintenance of the organisation's website.",
       photo: '/media/team/gift.jpg',     // ← place photo at public/media/team/gift.jpg
     },
   ];
@@ -198,7 +198,7 @@ export function Leadership() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          object-position: top;
+          object-position: center;
           display: block;
         }
 

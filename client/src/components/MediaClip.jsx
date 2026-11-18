@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export function MediaClip({ src, poster, caption }) {
+export function MediaClip({ title, tag, src, poster, caption }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -11,8 +11,6 @@ export function MediaClip({ src, poster, caption }) {
     const applyMotionPreference = () => {
       if (motion.matches) {
         video.pause();
-      } else {
-        video.play().catch(() => {});
       }
     };
 
@@ -23,18 +21,24 @@ export function MediaClip({ src, poster, caption }) {
 
   return (
     <figure className="media-clip">
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        poster={poster}
-      >
-        <source src={src} type="video/mp4" />
-      </video>
-      <figcaption>{caption}</figcaption>
+      <div className="media-clip__video-wrap">
+        {tag && <span className="media-clip__badge">{tag}</span>}
+        <video
+          ref={videoRef}
+          controls
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={poster}
+        >
+          <source src={src} type="video/mp4" />
+        </video>
+      </div>
+      <figcaption className="media-clip__body">
+        {title && <h4>{title}</h4>}
+        <p>{caption}</p>
+      </figcaption>
     </figure>
   );
 }
