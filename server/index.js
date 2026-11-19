@@ -46,12 +46,6 @@ app.get('/api/health', (_req, res) => {
 
 app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({
-        error: 'The enquiry service is temporarily unavailable. Please try again later.',
-      });
-    }
-
     const { name, email, phone = '', interest, message, companyWebsite } = req.body ?? {};
 
     if (typeof companyWebsite === 'string' && companyWebsite.trim()) {
@@ -89,7 +83,15 @@ app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
       });
     }
 
-    await Inquiry.create(cleaned);
+    if (mongoose.connection.readyState === 1) {
+      try {
+        await Inquiry.create(cleaned);
+      } catch (error) {
+        console.error('Failed to save inquiry', error);
+      }
+    } else {
+      console.warn('MongoDB is not connected. The enquiry will be emailed only.');
+    }
 
     try {
       await sendInquiryEmail(cleaned);
@@ -98,8 +100,8 @@ app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
       const authFailed = error.code === 'EAUTH' || error.responseCode === 535;
       return res.status(502).json({
         error: authFailed
-          ? 'Gmail rejected the mailbox login. In server/.env, set SMTP_PASS to a 16-character App Password, not the usual Gmail password.'
-          : 'Your enquiry was saved, but the email to Aquabloom could not be sent. Please try again or call 0707 955 894.',
+          ? 'Gmail rejected the mailbox login. Set SMTP_PASS to a 16-character App Password, not the usual Gmail password.'
+          : 'The email to Aquabloom could not be sent. Please try again or call 0707 955 894.',
       });
     }
 
@@ -112,20 +114,18 @@ app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
 
 async function start() {
   if (!MONGODB_URI) {
-    console.error('MONGODB_URI is missing. Add it to server/.env or a root .env file.');
-    process.exit(1);
-  }
-
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('MongoDB connection failed', error);
-    process.exit(1);
+    console.warn('MONGODB_URI is not set. Starting without a database.');
+  } else {
+    try {
+      await mongoose.connect(MONGODB_URI);
+      console.log('Connected to MongoDB');
+    } catch (error) {
+      console.error('MongoDB connection failed. Starting without a database.', error);
+    }
   }
 
   app.listen(PORT, () => {
-    console.log(`Aquabloom API listening on http://localhost:${PORT}`);
+    console.log(`Aquabloom API listening on port ${PORT}`);
   });
 }
 
