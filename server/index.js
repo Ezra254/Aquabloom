@@ -13,6 +13,7 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = Number(process.env.PORT) || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || '';
 const allowedOrigins = (process.env.CLIENT_ORIGIN || '')
@@ -39,11 +40,23 @@ const inquiryLimiter = rateLimit({
   max: 8,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: { error: 'Too many enquiries from this network. Please try again shortly.' },
 });
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const INTERESTS = new Set(['fingerlings', 'services', 'partnership', 'training', 'other']);
+
+app.get('/', (_req, res) => {
+  res.json({
+    status: 'online',
+    message: 'Aquabloom API is running',
+    endpoints: {
+      health: '/api/health',
+      inquiries: '/api/inquiries [POST]',
+    },
+  });
+});
 
 app.get('/api/health', (_req, res) => {
   res.json({
