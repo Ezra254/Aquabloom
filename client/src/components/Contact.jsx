@@ -25,15 +25,24 @@ export function Contact() {
     setStatus({ type: 'loading', message: 'Sending your enquiry…' });
 
     try {
-      const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+      const defaultApiUrl = import.meta.env.PROD
+        ? 'https://aquabloom-0bqo.onrender.com'
+        : '';
+      const apiBase = (import.meta.env.VITE_API_URL || defaultApiUrl).replace(/\/$/, '');
       const response = await fetch(`${apiBase}/api/inquiries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      const payload = await response.json().catch(() => ({}));
 
-      if (!response.ok) {
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Unable to connect to the enquiry service. Please try again shortly or contact us by phone.');
+      }
+
+      const payload = await response.json();
+
+      if (!response.ok || !payload.ok) {
         throw new Error(payload.error || 'Unable to send your enquiry right now.');
       }
 

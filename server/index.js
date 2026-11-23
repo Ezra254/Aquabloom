@@ -18,19 +18,33 @@ const PORT = Number(process.env.PORT) || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || '';
 const allowedOrigins = (process.env.CLIENT_ORIGIN || '')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/\/$/, ''))
   .filter(Boolean);
+
+// Always allow the production client domain and standard local dev ports
+const defaultClientOrigins = [
+  'https://aquabloom-teal.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+for (const origin of defaultClientOrigins) {
+  if (!allowedOrigins.includes(origin)) {
+    allowedOrigins.push(origin);
+  }
+}
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/$/, '');
+      if (allowedOrigins.length === 0 || allowedOrigins.includes(cleanOrigin)) {
+        return callback(null, true);
       }
       callback(null, false);
     },
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true,
   })
 );
 app.use(express.json({ limit: '32kb' }));
