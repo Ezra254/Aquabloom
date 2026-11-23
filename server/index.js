@@ -134,11 +134,14 @@ app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
     } catch (error) {
       console.error('Failed to email inquiry', error);
       const authFailed = error.code === 'EAUTH' || error.responseCode === 535;
-      return res.status(502).json({
-        error: authFailed
-          ? 'Gmail rejected the mailbox login. Set SMTP_PASS to a 16-character App Password, not the usual Gmail password.'
-          : 'The email to Aquabloom could not be sent. Please try again or call 0707 955 894.',
-      });
+      const timeout = error.code === 'ETIMEDOUT' || error.command === 'CONN' || (typeof error.message === 'string' && error.message.includes('timeout'));
+      let errorMessage = 'The email to Aquabloom could not be sent. Please try again or call 0707 955 894.';
+      if (authFailed) {
+        errorMessage = 'Gmail rejected the mailbox login. Set SMTP_PASS to a 16-character App Password, not the usual Gmail password.';
+      } else if (timeout) {
+        errorMessage = 'Email connection timed out. Free cloud hosts (like Render) block SMTP ports (25/465/587). Please configure RESEND_API_KEY in Render environment variables.';
+      }
+      return res.status(502).json({ error: errorMessage });
     }
 
     return res.status(201).json({ ok: true });
