@@ -85,6 +85,7 @@ app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
     const { name, email, phone = '', interest, message, companyWebsite } = req.body ?? {};
 
     if (typeof companyWebsite === 'string' && companyWebsite.trim()) {
+      console.warn(`[Spam Honeypot] Ignored submission with companyWebsite="${companyWebsite}" from ${email}`);
       return res.status(200).json({ ok: true });
     }
 
@@ -95,6 +96,8 @@ app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
       interest: String(interest ?? '').trim(),
       message: String(message ?? '').trim(),
     };
+
+    console.log(`[Inquiry] Received enquiry from ${cleaned.name} (${cleaned.email})`);
 
     if (cleaned.name.length < 2 || cleaned.name.length > 120) {
       return res.status(400).json({ error: 'Please enter your full name.' });
@@ -144,6 +147,7 @@ app.post('/api/inquiries', inquiryLimiter, async (req, res) => {
       return res.status(502).json({ error: errorMessage });
     }
 
+    console.log(`[Inquiry] Successfully delivered email for ${cleaned.name}`);
     return res.status(201).json({ ok: true });
   } catch (error) {
     console.error('Failed to save inquiry', error);

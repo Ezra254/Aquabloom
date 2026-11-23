@@ -141,7 +141,12 @@ export function Contact() {
             </select>
           </label>
 
-          <label className="hp" htmlFor="companyWebsite">
+          <label
+            className="hp"
+            htmlFor="companyWebsite"
+            style={{ display: 'none' }}
+            aria-hidden="true"
+          >
             Company website
             <input
               id="companyWebsite"
