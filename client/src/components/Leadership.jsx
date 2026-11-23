@@ -1,29 +1,31 @@
 export function Leadership() {
   const director = {
     name: 'Dr. Zacharia Shitote',
-    title: 'Managing Director & CEO',
-    bio: 'Provides strategic direction and oversees all operations across Aquabloom Ventures.',
-    photo: '/media/team/zacharia.jpg',   // ← place photo at public/media/team/zacharia.jpg
+    title: 'Founder & Director',
+    bio: 'Founder and a director of Aquabloom Ventures Limited.',
+    photo: '/media/team/zacharia.jpg',
   };
 
   const team = [
     {
       name: 'Cliff Shitote',
-      title: 'Head of Hatchery Operations & Sales',
-      bio: 'Leads fingerling production and manages key relationships with farmers, NGOs, and county governments.',
-      photo: '/media/team/cliff.jpg',    // ← place photo at public/media/team/cliff.jpg
+      title: 'Director, CEO & Managing Director',
+      bio: 'Leads the company as CEO and Managing Director, and remains a director of Aquabloom Ventures Limited.',
+      phoneLabel: '0701 705 153',
+      phoneHref: 'tel:+254701705153',
+      photo: '/media/team/cliff.jpg',
     },
     {
       name: 'Buyanzi Dolphine',
       title: 'Head of Community & Impact',
       bio: 'Oversees youth and women training programmes and community development initiatives.',
-      photo: '/media/team/buyanzi.jpg',  // ← place photo at public/media/team/buyanzi.jpg
+      photo: '/media/team/buyanzi.jpg',
     },
     {
       name: 'Gift Ezra',
       title: 'IT & Digital Operations Lead',
       bio: "Responsible for the development, management and maintenance of the organisation's website.",
-      photo: '/media/team/gift.jpg',     // ← place photo at public/media/team/gift.jpg
+      photo: '/media/team/gift.jpg',
     },
   ];
 
@@ -47,7 +49,7 @@ export function Leadership() {
           {/* ── Director ── */}
           <div className="ls-director-row">
             <article className="ls-card ls-card--director">
-              <span className="ls-crown-badge">&#9733; Director</span>
+              <span className="ls-crown-badge">Founder & Director</span>
               <div className="ls-avatar ls-avatar--lg">
                 {director.photo
                   ? <img src={director.photo} alt={`Photo of ${director.name}`} className="ls-photo" />
@@ -81,6 +83,9 @@ export function Leadership() {
                 </div>
                 <h3 className="ls-name">{member.name}</h3>
                 <p className="ls-role">{member.title}</p>
+                {member.phoneHref ? (
+                  <a className="ls-phone" href={member.phoneHref}>{member.phoneLabel}</a>
+                ) : null}
                 <p className="ls-bio">{member.bio}</p>
               </article>
             ))}
@@ -216,6 +221,18 @@ export function Leadership() {
           letter-spacing: 0.06em;
           text-transform: uppercase;
           margin-bottom: 0.65rem;
+        }
+
+        .ls-phone {
+          display: inline-block;
+          margin: 0 0 0.65rem;
+          color: var(--color-primary);
+          font-weight: 600;
+        }
+
+        .ls-phone:hover,
+        .ls-phone:focus-visible {
+          color: var(--color-accent);
         }
 
         .ls-bio {

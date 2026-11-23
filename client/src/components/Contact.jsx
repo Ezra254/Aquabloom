@@ -25,7 +25,8 @@ export function Contact() {
     setStatus({ type: 'loading', message: 'Sending your enquiry…' });
 
     try {
-      const response = await fetch('/api/inquiries', {
+      const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+      const response = await fetch(`${apiBase}/api/inquiries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
